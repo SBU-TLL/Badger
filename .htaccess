@@ -1,9 +1,12 @@
 <Files "giveYourselfCredit.php">
 
-AuthType shibboleth
-ShibRequestSetting requireSession 1
-require valid-user
-
+# Production - use Shibboleth authentication
+# Note: Local development uses .env file instead (Herd uses Nginx, not Apache)
+<IfModule mod_shib>
+    AuthType shibboleth
+    ShibRequestSetting requireSession true
+    require valid-user
+</IfModule>
 
 
 </Files>
