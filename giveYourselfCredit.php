@@ -1,4 +1,5 @@
 <?
+require_once __DIR__ . '/local_shibboleth.php';
 require("credlyAPI.php");
 
 
