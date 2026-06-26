@@ -1,0 +1,22 @@
+private/*
+.lando.env
+
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Files left over from merge conflicts
+*.orig
+
+# Others
+
+tools/FAKE.Core
+
+[Pp]ackages/
+[Bb]uild/
+[Dd]eploy/
+[Aa]rtifacts/
+[Tt]est/
+[Tt]ools/*
+![Tt]ools/packages.config

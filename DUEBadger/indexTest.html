@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="//code.jquery.com/jquery-1.11.0.js"></script>
+
+    <script>
+        var firstFocus1 = true;
+        var firstFocus2 = true;
+        var myCanvas;
+        var ctxt;
+        $(function() {
+
+            myCanvas = document.getElementById("canvas");
+            ctxt = myCanvas.getContext("2d");
+
+
+
+
+
+
+            $("#makerHolder").load("maker.svg", function() {
+
+
+                $("#badgeHolder").load("badge_from_career_center.svg", function() {
+
+                   // setLineText(1)
+                   // setLineText(2)
+                    hideAllButtons()
+                    showButton(1)
+                    $('#line1Input').on("keyup", function() {
+
+                        $('#line1').text($('#line1Input').val())
+                        // updateDownloadURL()
+
+
+                    })
+                    $('#line2Input').on("keyup", function() {
+
+                        $('#line2').text($('#line2Input').val())
+
+                        //updateDownloadURL()
+
+                    })
+
+                    $("#buttoncreate *").on("mouseover", function() {
+
+
+
+
+                        document.getElementById("createLabel").classList.add("createHover");
+                        document.getElementById("createLabel").classList.remove("createOut");
+
+
+
+                        // $("#createLabel").addClass("createPressed")
+                    });
+
+
+                    $("#buttoncreate").on("mouseout", function() {
+
+
+
+
+                        document.getElementById("createLabel").classList.remove("createHover");
+                        document.getElementById("createLabel").classList.add("createOut");
+
+
+                        // $("#createLabel").addClass("createPressed")
+                    });
+
+
+
+                    $("#buttoncreate").on("mouseup", function() {
+
+
+                    toggleWaiting()
+
+                        updateDownloadURL()
+
+                        // $("#createLabel").addClass("createPressed")
+                    });
+
+
+
+
+                });
+
+
+
+                $('#line1Input').focus(function() {
+                    if (firstFocus1) {
+                        $('#line1Input').val("");
+                        firstFocus1 = false;
+                    }
+                });
+
+                $('#line2Input').focus(function() {
+                    if (firstFocus2) {
+                        $('#line2Input').val("");
+                        firstFocus2 = false;
+                    }
+                });
+
+
+                $("#pressButtons g").on("click", handleButtonPress)
+
+
+
+            });
+
+            function handleButtonPress(evt) {
+
+                var buttonPress = $(evt.target).closest("g").attr("id").split("-")[1]
+
+                hideAllButtons()
+                showButton(buttonPress)
+
+            }
+
+
+
+
+
+
+
+
+        });
+
+
+        function hideAllButtons() {
+
+            [1, 2, 3].forEach(function(i) {
+
+                $("#button" + i + "press").css({
+                    "display": "none"
+                })
+
+
+            })
+
+
+
+        }
+
+
+
+
+        function setLineText(i) {
+
+
+            var firstline = document.getElementById('line' + i).innerHTML
+            //console.log($('#line1').html())
+            $('#line' + i + 'Input').val(firstline)
+
+
+
+        }
+
+
+        function pickCoin(coinId) {
+            var coins = ["gold", "silver", "bronze"]
+
+
+            $('#Coins > g').attr("style", "display:none")
+
+            $('#' + coins[coinId - 1]).attr("style", "display:inline")
+
+
+
+
+
+
+        }
+
+
+        
+        function toggleWaiting(){
+            
+            
+            document.getElementById("createLabel").classList.toggle("createLoading");
+
+                        document.getElementById("createBG").classList.toggle("createPressed");
+                        document.getElementById("createBGLeft").classList.toggle("createPressedEnd");
+                        document.getElementById("createBGRight").classList.toggle("createPressedEnd");
+                        document.getElementById("createBGLeftIn").classList.toggle("createPressedIn");
+                        document.getElementById("createBGRightIn").classList.toggle("createPressedIn");
+            
+        }
+
+        function showButton(i) {
+
+            $("#button" + i + "press").css({
+                "display": "block"
+            })
+            pickCoin(i)
+        }
+
+
+
+
+        function download() {
+
+
+            image = document.getElementById("canvas").toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "")
+            //image = document.getElementById("canvas").toDataURL("image/png")
+            $.post("credly.php", {
+                    image: image,
+                    firstline: $('#line1').text(),
+                    secondline: $('#line2').text()
+                },
+                function(data) {
+                   // $('#linkHolder').html("<a href='https://credly.com/recipients/" + JSON.parse(data).data + "'>click</a>");
+                    //$('#linkHolder').html(data);
+                $('#congrats').on("click" , 
+                                 function(){
+                    
+                    window.open("https://credly.com/recipients/" + JSON.parse(data).data,'_blank'); 
+                    
+                    
+                    
+                })
+                
+                
+                toggleWaiting()
+                 $('#finished').attr("style", "display:inline")
+                }
+            
+            );
+        }
+
+        function updateDownloadURL() {
+
+
+            var img = new Image;
+            // img.src = url;
+            img.src = 'data:image/svg+xml;utf8,' + $('#badgeHolder').html();
+
+            img.addEventListener('load', function() {
+
+                ctxt.drawImage(this, 0, 0, 1912, 1912);
+                image = document.getElementById("canvas").toDataURL("image/png")
+                    .replace("image/png", "image/octet-stream");
+
+                download();
+            });
+
+        }
+
+    </script>
+    <style>
+ 
+        @keyframes create {
+            from {
+                font-size: 18px;
+
+            }
+
+            to {
+                font-size: 21px;
+            }
+        }
+        @keyframes out {
+            from {
+                font-size: 21px;
+
+            }
+
+            to {
+                font-size: 18px;
+            }
+        }
+        
+        .createPressed {
+
+            fill: #d42632 !important;
+        }
+
+        .createPressedEnd {
+
+            fill: #ba1e29 !important;
+        }
+
+        .createPressedIn {
+
+            fill: #9e131c !important;
+        }
+
+
+        .createHover {
+            animation-duration: .6s;
+            animation-name: create;
+            animation-direction: normal;
+            animation-fill-mode: forwards;
+
+        }
+        .createOut {
+            animation-duration: .6s;
+            animation-name: out;
+            animation-direction: normal;
+                    animation-fill-mode: forwards;
+
+        }
+        .createLoading {
+            animation-duration: .6s;
+            animation-name: create;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+
+        }
+
+ 
+
+        #badgeHolder {
+            position: absolute;
+            top: 0px;
+            width: 50%;
+
+        }
+ 
+
+        #createLabel{
+            
+          pointer-events: none;  
+            
+        }
+
+        #buttonsSelected {
+
+            display: block;
+
+        }
+
+        #button2press,
+        #button3press,
+        #buttoncreatepress {
+
+            display: none;
+
+        }
+
+
+        #pressButtons g {
+            cursor: pointer;
+        }
+        
+        #buttoncreate{
+            cursor: pointer;
+        }
+        
+        #congrats{
+            cursor: pointer;
+        }
+ 
+
+    </style>
+</head>
+
+<body>
+
+    <div id="makerHolder">
+    </div>
+    <div id="badgeHolder">
+    </div>
+    <div id="linkHolder"></div>
+
+    <canvas id="canvas" style="display:none;" width=1912 height=1912></canvas>
+
+</body>
+
+</html>

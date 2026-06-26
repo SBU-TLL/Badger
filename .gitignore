@@ -1,0 +1,23 @@
+# Archives / backups (kept on disk, never committed)
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# Large database dumps (data; the ORSEE private dump contains participant PII)
+*_dump_*.sql
+*mysqldump*.sql
+
+# OS / editor junk
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Dependencies / build
+node_modules/
+vendor/
+*.log

@@ -1,0 +1,13 @@
+name: cbpe
+recipe: lamp
+config:
+  webroot: www
+  php: 8.2
+  database: mysql
+
+env_file:
+  - .lando.env
+
+# services:
+#   phpmyadminservice:
+#     type: phpmyadmin
