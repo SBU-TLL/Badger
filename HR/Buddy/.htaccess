@@ -1,8 +1,10 @@
 <Files "giveYourselfCredit.php">
 
-AuthType shibboleth
-ShibRequestSetting requireSession 1
-require valid-user
+<IfModule mod_shib>
+    AuthType shibboleth
+    ShibRequestSetting requireSession 1
+    require valid-user
+</IfModule>
 
 
 
