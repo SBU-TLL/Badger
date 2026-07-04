@@ -1,0 +1,41 @@
+# Keep the production image clean and free of dev/secret/VCS/legacy material.
+
+# Version control & this build's own files
+.git
+.gitignore
+.dockerignore
+Dockerfile
+
+# Local DDEV development environment (dev-only; never deployed)
+.ddev/
+
+# Local env / secrets — production uses runtime env vars, not files
+.env
+.env.*
+
+# ORSEE (cbpe/) — legacy PHP-5 + MySQL app; runs in its own container, not here
+cbpe/
+
+# Large archive tarballs committed at the repo root (not runtime artifacts)
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# Secret-bearing backup / legacy copies not used by the running apps
+# (they still hold OLD Credly keys/passwords — keep them OUT of the image)
+**/credly_bak.php
+**/oldBadger/
+**/indexTest.html
+
+# Docs
+*.md
+README*
+
+# OS / editor junk (AppleDouble resource forks, Finder metadata, swap files)
+.DS_Store
+**/.DS_Store
+._*
+**/._*
+*.swp
+*.swo
