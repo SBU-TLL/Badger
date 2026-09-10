@@ -1,0 +1,192 @@
+<html>
+
+<head>
+    <link href="effra.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+
+    <script src="download.js"></script>
+    <script>
+        var svgText;
+        var myCanvas;
+        var ctxt;
+        var image;
+        var lines = [];
+        var firstFocus1 = false;
+        var firstFocus2 = false;
+        $(function() {
+
+            myCanvas = document.getElementById("canvas");
+            ctxt = myCanvas.getContext("2d");
+            $('#svgHolder').load('badge.svg', function() {
+                var firstline = document.getElementById('line1').innerHTML
+                //console.log($('#line1').html())
+                $('#line1Input').val(firstline)
+                var secondline = document.getElementById('line2').innerHTML;
+                $('#line2Input').val(secondline);
+
+                $('#line1Input').focus(function() {
+                    if (firstFocus1 == false) {
+                        $('#line1Input').val("");
+                        firstFocus1 = true;
+                    }
+                });
+
+                $('#line2Input').focus(function() {
+                    if (firstFocus2 == false) {
+                        $('#line2Input').val("");
+                        firstFocus2 = true;
+                    }
+                });
+
+
+
+
+
+                pickCoin();
+            });
+
+
+            $('#line1Input').on("keyup", function() {
+
+                $('#line1').text($('#line1Input').val())
+                updateDownloadURL()
+
+
+            })
+            $('#line2Input').on("keyup", function() {
+
+                $('#line2').text($('#line2Input').val())
+
+                updateDownloadURL()
+
+            })
+
+
+
+
+            $('.coin').on("change", function() {
+
+                pickCoin()
+                updateDownloadURL()
+
+
+            })
+
+
+            function updateDownloadURL() {
+
+                $("#download").attr("download", $('#line1').text() + " " + $('#line2').text() + ".png");
+
+
+                var img = new Image;
+                // img.src = url;
+                img.src = 'data:image/svg+xml;utf8,' + $('#svgHolder').html();
+
+                img.addEventListener('load', function() {
+
+                    ctxt.drawImage(this, 0, 0, 1912, 1912);
+                    image = document.getElementById("canvas").toDataURL("image/png")
+                        .replace("image/png", "image/octet-stream");
+                });
+
+            }
+
+
+            function pickCoin() {
+                var currentCoin = $('input[name=coin]:checked').attr('id')
+                console.log($('coin').val())
+                $('#Coins > g').attr("style", "display:none")
+
+                $('#' + currentCoin).attr("style", "display:inline")
+
+            }
+
+            var coins = ["bronze", "silver", "gold"]
+            coins.forEach(
+                function(val) {
+
+                    var coin = $("<div/>");
+                    coin.attr("id", val + "copy");
+                    coin.attr("class", "coinCopies");
+
+                }
+
+            )
+
+            setTimeout(updateDownloadURL, 2100);
+        })
+
+
+
+
+
+        function download() {
+
+            var download = document.getElementById("download");
+            image = document.getElementById("canvas").toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "")
+            //image = document.getElementById("canvas").toDataURL("image/png")
+            $.post("credly.php", {
+                    image: image,
+                    firstline: $('#line1').text(),
+                    secondline: $('#line2').text()
+                },
+                function(data) {
+                    $('#linkHolder').html("<a href='https://credly.com/recipients/" + JSON.parse(data).data + "'>click</a>");
+                    //$('#linkHolder').html(data);
+                $("#congrats").attr("style", "display:inline")
+                }
+                
+            );
+
+            //download.setAttribute("href", image);
+        }
+
+    </script>
+    <style>
+        #svgHolder {
+            width: 50%;
+            height: 50%;
+        }
+
+        #form {
+            display: flex;
+            flex-flow: row;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!--
+ 
+
+-->
+    <div id="form">
+        <div id="svgHolder">
+        </div>
+        <div>
+            <label for="line1Input">First Line</label>
+            <input class="input" id="line1Input" />
+            <br/>
+            <label for="line2Input">Second Line</label>
+            <input class="input" id="line2Input" />
+            <br/>
+            <label for="bronze">bronze</label>
+
+            <input class="coin" type="radio" name="coin" id="bronze" value="bronze" />
+            <label for="silver">silver</label>
+
+            <input class="coin" type="radio" name="coin" id="silver" value="silver" />
+            <label for="gold">gold</label>
+            <input class="coin" type="radio" name="coin" id="gold" value="gold" checked />
+            <a id="download" download="triangle.png">
+                <button type="button" onClick="download()">Create</button>
+            </a>
+        </div>
+        <div id="linkHolder"></div>
+    </div>
+    <canvas id="canvas" style="display:none" width=1912 height=1912>
+    </canvas>
+</body>
+
+</html>
